@@ -7,12 +7,4 @@ export class UpdateFavoriteDto extends PartialType(CreateFavoriteDto) {
     @IsNumber()
     @IsNotEmpty()
     id: number;
-
-    @IsString()
-    @IsNotEmpty()
-    cityName: string;
-
-    @IsString()
-    @IsNotEmpty()
-    country: string;
 }

@@ -9,8 +9,4 @@ export class CreateFavoriteDto {
     @IsString()
     @IsNotEmpty()
     country: string;
-
-    @IsNumber()
-    @IsNotEmpty()
-    userId: number;
 }
