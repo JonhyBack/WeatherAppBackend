@@ -32,7 +32,7 @@ export class AuthController {
             throw new BadRequestException('Invalid credentials');
         }
 
-        return this.authService.login(newUser);
+        return `Favorite item with username ${newUser.username} created successfully`;
     }
 }
 

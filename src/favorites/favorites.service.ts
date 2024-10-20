@@ -36,7 +36,7 @@ export class FavoritesService {
   //   return `Favorite item with ID ${updateFavoriteDto.id} updated successfully for user ${userId}`;
   // }
 
-  async remove(id: number, userId: number): Promise<string> {
+  async remove(id: number, userId: number): Promise<number> {
     const favorite = await this.favoritesRepository.findOneBy({ id, user: { id: userId } });
     if (!favorite) {
       throw new NotFoundException(`Favorite with ID ${id} not found`);
@@ -44,6 +44,6 @@ export class FavoritesService {
 
     await this.favoritesRepository.remove(favorite);
 
-    return `Favorite item with ID ${id} removed successfully`;
+    return id;
   }
 }

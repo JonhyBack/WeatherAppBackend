@@ -57,6 +57,8 @@ export class FavoritesController {
   @ApiBearerAuth()
   @ApiBadRequestResponse({ description: 'City not found' })
   remove(@Param('id') id: string, @Req() req: IRequest) {
-    return this.favoritesService.remove(+id, req.user.userId);
+    const removedId = this.favoritesService.remove(+id, req.user.userId);
+
+    return `Favorite item with ID ${removedId} removed successfully`
   }
 }
