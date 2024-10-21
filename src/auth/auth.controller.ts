@@ -1,8 +1,7 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -12,6 +11,7 @@ export class AuthController {
     @Post('login')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Login user' })
+    @ApiBadRequestResponse({ description: 'Invalid credentials' })
     async login(@Body() loginDto: AuthDto) {
         const user = await this.authService.validateUser(loginDto.username, loginDto.password);
 
@@ -25,6 +25,8 @@ export class AuthController {
     @Post('signup')
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Sign up new user' })
+    @ApiCreatedResponse({ description: 'Favorite item created successfully' })
+    @ApiBadRequestResponse({ description: 'Invalid credentials' })
     async signUp(@Body() signUpDto: AuthDto) {
         const newUser = await this.authService.signUp(signUpDto.username, signUpDto.password);
 
@@ -32,7 +34,7 @@ export class AuthController {
             throw new BadRequestException('Invalid credentials');
         }
 
-        return `Favorite item with username ${newUser.username} created successfully`;
+        return `${newUser.username} created successfully`;
     }
 }
 

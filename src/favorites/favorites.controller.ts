@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Req, UseGuards, BadRequestException, NotFoundException } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetFavoriteDto } from './dto/get-favorite.dto';
 
 interface IRequest extends Request {
@@ -17,12 +17,23 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) { }
 
   @Post('add')
-  @ApiOkResponse()
+  @ApiOperation({ summary: 'Add a new favorite city' })
   @ApiBearerAuth()
-  @ApiBadRequestResponse({ description: 'City already added' })
-  @ApiBadRequestResponse({ description: 'You have already added 5 favorite cities' })
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: String,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'City already added',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'You have already added 5 favorite cities',
+  })
   async create(
-    @Body() createFavoriteDto: CreateFavoriteDto,
+    @Body()
+    createFavoriteDto: CreateFavoriteDto,
     @Req() req: IRequest,
   ) {
     const favorites = await this.favoritesService.findAllByUserId(req.user.userId);
@@ -41,8 +52,13 @@ export class FavoritesController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all favorites' })
   @ApiBearerAuth()
-  @ApiOkResponse()
+  @ApiResponse({
+    status: 200,
+    description: 'The list of all favorites',
+    type: [GetFavoriteDto],
+  })
   getFavorites(@Req() req: IRequest,) {
     return this.favoritesService.findAllByUserId(req.user.userId).
       then(favorites => favorites.
@@ -52,18 +68,19 @@ export class FavoritesController {
           })));
   }
 
-  // @Patch()
-  // @ApiOkResponse()
-  // update(@Body() updateFavoriteDto: UpdateFavoriteDto, @Req() req: IRequest) {
-  //   return this.favoritesService.update(updateFavoriteDto, req.user.userId);
-  // }
-
   @Delete('delete/:id')
-  @ApiOkResponse()
+  @ApiOperation({ summary: 'Delete a favorite by ID' })
   @ApiBearerAuth()
-  @ApiBadRequestResponse({ description: 'City not found' })
+  @ApiResponse({
+    status: 200,
+    description: 'The favorite item has been successfully deleted',
+    type: String,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'City not found',
+  })
   async remove(@Param('id') id: string, @Req() req: IRequest) {
-    // try {
     const removedId = await this.favoritesService.remove(+id, req.user.userId);
 
     if (!removedId) {
@@ -71,11 +88,6 @@ export class FavoritesController {
     }
 
     return `Favorite item with ID ${removedId} removed successfully`
-    // } catch (error) {
-    //   if (error instanceof NotFoundException) {
-    //     throw error;
-    //   }
-    //   throw error;
-    // }
   }
 }
+

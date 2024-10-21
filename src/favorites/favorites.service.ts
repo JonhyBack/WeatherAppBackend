@@ -24,17 +24,6 @@ export class FavoritesService {
     return this.favoritesRepository.findBy({ user: { id: userId } });
   }
 
-  // async update(updateFavoriteDto: UpdateFavoriteDto, userId: number): Promise<string> {
-  //   const favorite = await this.favoritesRepository.findOneBy({ id: updateFavoriteDto.id });
-  //   if (!favorite) {
-  //     throw new NotFoundException(`Favorite with ID ${updateFavoriteDto.id} not found for user ${userId}`);
-  //   }
-
-  //   await this.favoritesRepository.update(updateFavoriteDto.id, updateFavoriteDto);
-
-  //   return `Favorite item with ID ${updateFavoriteDto.id} updated successfully for user ${userId}`;
-  // }
-
   async remove(id: number, userId: number): Promise<number> {
     const favorite = await this.favoritesRepository.findOneBy({ id, user: { id: userId } });
     if (!favorite) {
