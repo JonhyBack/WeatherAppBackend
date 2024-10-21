@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { Favorite } from './entities/favorite.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,7 +13,7 @@ export class FavoritesService {
 
   async create(createFavoriteDto: CreateFavoriteDto, userId: number): Promise<Favorite> {
     const favorite = this.favoritesRepository.create({
-      city_name: createFavoriteDto.cityName,
+      city_name: createFavoriteDto.city,
       country: createFavoriteDto.country,
       user: { id: userId },
     });
@@ -39,7 +38,7 @@ export class FavoritesService {
   async remove(id: number, userId: number): Promise<number> {
     const favorite = await this.favoritesRepository.findOneBy({ id, user: { id: userId } });
     if (!favorite) {
-      throw new NotFoundException(`Favorite with ID ${id} not found`);
+      return null;
     }
 
     await this.favoritesRepository.remove(favorite);

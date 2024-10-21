@@ -4,7 +4,7 @@ import { IsNotEmpty } from "class-validator";
 export class CreateFavoriteDto {
     @IsString()
     @IsNotEmpty()
-    cityName: string;
+    city: string;
 
     @IsString()
     @IsNotEmpty()
